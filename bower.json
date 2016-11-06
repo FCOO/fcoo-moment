@@ -1,40 +1,37 @@
 {
-  "name"		: "fcoo-moment",
-  "version"	: "0.0.0",
-  "homepage": "https://github.com/FCOO/fcoo-moment",
-  "authors": [
-    "Niels Holt"
-  ],
-  "description": "",
-  "main": [
-    "dist/fcoo-moment.js",
-    "dist/fcoo-moment.css"
-  ],
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/FCOO/fcoo-moment.git"
-	},
-
-	"dependencies": {
-		"jquery": "latest"
-	},
-
-	"devDependencies": {
-    "bourbon": "latest",
-		"modernizr-mixin": "latest",
-		"mathsass": "latest"
-  },
-	
-	"license": "MIT",
-
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "moduleType": [
-    "es6"
-  ]
+    "name": "fcoo-moment",
+    "version": "0.0.0",
+    "homepage": "https://github.com/FCOO/fcoo-moment",
+    "authors": [
+        "Niels Holt"
+    ],
+    "description": "",
+    "main": [
+        "dist/fcoo-moment.js",
+        "dist/fcoo-moment.css"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/FCOO/fcoo-moment.git"
+    },
+    "dependencies": {
+        "jquery": "latest",
+        "moment": "^2.15.2"
+    },
+    "devDependencies": {
+        "bourbon": "latest",
+        "modernizr-mixin": "latest",
+        "mathsass": "latest"
+    },
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "moduleType": [
+        "es6"
+    ]
 }
