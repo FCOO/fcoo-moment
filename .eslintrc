@@ -11,6 +11,7 @@
         "L"         : false,
         "undefined" : false,
         "moment"    : false,
+        "i18next"   : true,
         "Raven"     : false
     },
 
