@@ -14,14 +14,37 @@
 	//Create fcoo-namespace
 	window.fcoo = window.fcoo || {};
 
-	//If fcoo.namespace() is defined create a name-space
-	//var ns = window.fcoo.namespace ? window.fcoo.namespace(''/*Enter the fcoo-namespace here*/) : window.fcoo; 
-	//var ns = window;
 
-    //Change language in moment when i18next changes lang
-    i18next.on('languageChanged', function(lng) {
+    //Add translations for moment-simple-format
+    i18next.addPhrases( 'moment', {
+        utc     : { en: 'UTC'                },
+        local   : { en: 'local', da: 'lokal' },
+        dayAbbr : { en: 'd'                  },
+        hourAbbr: { en: 'h'    , da: 't'     },
+        minAbbr : { en: 'm'                  },
+        now     : { en: 'now'  , da: 'nu'    },
+        to      : { en: 'to'   , sa: 'til'   }
+    });
+
+
+    //Change language in moment and call sfInit when i18next changes lang
+    window.fcoo.events.on('languagechanged', function(){
+
         //Special case: Norwegian (no) using "Bokmål" (nb)
-        moment.locale(lng == 'no' ? 'nb' : lng);
+        moment.locale(i18next.language == 'no' ? 'nb' : i18next.language);
+
+        //Call moment.sfInit( options ) to set text - TODO
+        moment.sfInit({
+           text: {
+                utc     : i18next.t('moment:utc'),
+                local   : i18next.t('moment:local'),
+                dayAbbr : i18next.t('moment:dayAbbr'),
+                hourAbbr: i18next.t('moment:hourAbbr'),
+                minAbbr : i18next.t('moment:minAbbr'),
+                now     : i18next.t('moment:now'),
+                to      : i18next.t('moment:to')
+           });
+
     });
 
 
@@ -35,12 +58,12 @@
             { id:'Europe/Copenhagen' },
             { id:'Europe/London' },
             { id:'America/Thule' },
-            { id:'America/Scoresbysund', name:"East Greenland/Ittoqqortoormiit" },
-            { id:'America/Godthab', name:"West Greenland/Nuuk" },
-            { id:'America/Danmarkshavn', name:"East Greenland/Danmarkshavn" },
+            { id:'America/Scoresbysund', name:"East Greenland/Ittoqqortoormiit" },             //Østgrønland (grønlandsk: "Tunu")
+            { id:'America/Godthab', name:"West Greenland/Nuuk" },                              //Vestgrønland (Grønlandsk: "Kitaa")
+            { id:'America/Danmarkshavn', name:"East Greenland/Danmarkshavn" },                 //Østgrønland (grønlandsk: "Tunu")
             { id:'Atlantic/Reykjavik', name:"Iceland" }
         ] );
-
+//Nordgrønland (grønlandsk: "Avannaarsua") 
         $('#timezone option').each( function( index, elem ){
             var timezone = moment.sfGetTimezone( elem.value );
             if (timezone)
