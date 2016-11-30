@@ -6,14 +6,27 @@
 	https://github.com/FCOO/fcoo-moment
 	https://github.com/FCOO
 
+Set-up of common systems, objects, and methods for FCOO web applications use of moment.js and plugins
+Sections:
+1: Translation for moment-simple-format
+2: Add time-zones and translaation of there names
+3: 
+4: 
+
+
 ****************************************************************************/
 
-(function (/*$, */moment, i18next, window/*, document, undefined*/) {
+(function ($, moment, i18next, window/*, document, undefined*/) {
 	"use strict";
 	
 	//Create fcoo-namespace
 	window.fcoo = window.fcoo || {};
 
+    /***********************************************************************
+    ************************************************************************
+    1: Translation for moment-simple-format
+    ************************************************************************
+    ***********************************************************************/
 
     //Add translations for moment-simple-format
     i18next.addPhrases( 'moment', {
@@ -43,27 +56,57 @@
                 minAbbr : i18next.t('moment:minAbbr'),
                 now     : i18next.t('moment:now'),
                 to      : i18next.t('moment:to')
-           });
+           }
+       });
 
     });
 
 
+    /***********************************************************************
+    ************************************************************************
+    2: Add time-zones and translation of there names
+    ************************************************************************
+    ***********************************************************************/
+    //Adding the timezones and adding a 'group' options
+    moment.sfAddTimezone(
+        [
+            { id:'Europe/Copenhagen',    group: 'europe' },
+            { id:'Europe/London',        group: 'europe' },
 
-//console.log( moment.simpleFormat.options );
+            { id:'Atlantic/Faeroe',      group: 'atlantic' },
+            { id:'Atlantic/Reykjavik',   group: 'atlantic' },
 
-    //Add different timezones. Add options.group {string} to be able to sort the timezomes in groups
-/*
-    moment.sfAddTimezone([
-            { id:'Atlantic/Faeroe' },
-            { id:'Europe/Copenhagen' },
-            { id:'Europe/London' },
-            { id:'America/Thule' },
-            { id:'America/Scoresbysund', name:"East Greenland/Ittoqqortoormiit" },             //Østgrønland (grønlandsk: "Tunu")
-            { id:'America/Godthab', name:"West Greenland/Nuuk" },                              //Vestgrønland (Grønlandsk: "Kitaa")
-            { id:'America/Danmarkshavn', name:"East Greenland/Danmarkshavn" },                 //Østgrønland (grønlandsk: "Tunu")
-            { id:'Atlantic/Reykjavik', name:"Iceland" }
-        ] );
-//Nordgrønland (grønlandsk: "Avannaarsua") 
+            { id:'America/Godthab',      group: 'greenland' },
+            { id:'America/Scoresbysund', group: 'greenland' },
+            { id:'America/Danmarkshavn', group: 'greenland' },
+            { id:'America/Thule',        group: 'greenland' }
+        ],
+        null /* offsetMoment */
+    );
+
+    //Add the translation of the timezones incl. the two default id:'local' and id:'utc'
+    //Østgrønland (grønlandsk: "Tunu"), Vestgrønland (Grønlandsk: "Kitaa"), Nordgrønland (grønlandsk: "Avannaarsua") 
+
+    i18next.addPhrases( 'timezone', {
+        'local'               : { en: 'Local time',                      da: 'Lokaltid'           },
+        'utc'                 : { en: 'UTC',                             da: 'UTC'                },
+        'Europe/Copenhagen'   : { en: 'Europe/Copenhagen',               da: 'Europa/København'   },
+        'Europe/London'       : { en: 'Europe/London',                   da: 'Europa/London'      },
+        'Atlantic/Faeroe'     : { en: 'Atlantic/Faeroe Island',          da: 'Atlanten/Færøerne'  },
+        'Atlantic/Reykjavik'  : { en: 'Atlantic/Reykjavik',              da: 'Atlanten/Reykjavik' },
+        'America/Godthab'     : { en: 'West Greenland/Nuuk',             da: 'Vestgrøndlanf/Nuuk',           kl: 'Kitaa/Nuuk'             },
+        'America/Scoresbysund': { en: 'East Greenland/Ittoqqortoormiit', da: 'Østgrønland/Ittoqqortoormiit', kl: 'Tunu/Ittoqqortoormiit'  },
+        'America/Danmarkshavn': { en: 'East Greenland/Danmarkshavn',     da: 'Østgrønland/Danmarkshavn',     kl: 'Tunu/Danmarkshavn'      },
+        'America/Thule'       : { en: 'North Greenland/Thule Air Base',  da: 'Nordgrønland/Thule Air Base',  kl: 'Avannaarsua/Pituffik'   },
+    });
+
+
+    //Tranlate the names of the timezones, when i18next changes lang
+    window.fcoo.events.on('languagechanged', function(){
+
+
+
+/*        
         $('#timezone option').each( function( index, elem ){
             var timezone = moment.sfGetTimezone( elem.value );
             if (timezone)
@@ -84,7 +127,7 @@ Greenland
     value="America/Scoresbysund">East Greenland / Ittoqqortoormiit</option>
     value="America/Danmarkshavn">East Greenland / Danmarkshavn</option>
     value="America/Thule">Thule Air Base</option>
-
+*/
 
 
 
@@ -101,4 +144,4 @@ Greenland
 
 
 
-}(/*jQuery, */moment, i18next, this, document));
+}(jQuery, moment, i18next, this, document));

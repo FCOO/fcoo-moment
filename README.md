@@ -37,7 +37,7 @@ The following language-packages are included
 All but `en` and `kl` are included by adding the files in `overrides.moment.main` in `bower.json`
 `kl` are in `/src/kl.js` **BUT IT IS NOT READY** - for now it is only a copy of `da`
 
-The language are changed when `i18next` event `languageChanged` is fired using [Moment customization](http://momentjs.com/docs/#/customization/)
+The language are changed when `window.fcoo.events` event `languagechanged` is fired using [Moment customization](http://momentjs.com/docs/#/customization/)
 
 
 ## Packages
