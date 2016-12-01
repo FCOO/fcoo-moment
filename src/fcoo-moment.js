@@ -9,10 +9,10 @@
 Set-up of common systems, objects, and methods for FCOO web applications use of moment.js and plugins
 Sections:
 1: Translation for moment-simple-format
-2: Add time-zones and translaation of there names
-3: 
+2: Add time-zones and translation of there names
 4: 
-
+5: 
+6: Load format for date, time and timezone from fcoo.settings
 
 ****************************************************************************/
 
@@ -27,7 +27,6 @@ Sections:
     1: Translation for moment-simple-format
     ************************************************************************
     ***********************************************************************/
-
     //Add translations for moment-simple-format
     i18next.addPhrases( 'moment', {
         utc     : { en: 'UTC'                },
@@ -40,13 +39,13 @@ Sections:
     });
 
 
-    //Change language in moment and call sfInit when i18next changes lang
-    window.fcoo.events.on('languagechanged', function(){
+    //Change language in moment and call sfInit when the language is changed
+    window.fcoo.events.on('languagechanged', function(){ 
 
-        //Special case: Norwegian (no) using "Bokmål" (nb)
+        //Special case: Norwegian (no) using "BokmÃ¥l" (nb)
         moment.locale(i18next.language == 'no' ? 'nb' : i18next.language);
 
-        //Call moment.sfInit( options ) to set text - TODO
+        //Call moment.sfInit( options ) to set text
         moment.sfInit({
            text: {
                 utc     : i18next.t('moment:utc'),
@@ -58,9 +57,7 @@ Sections:
                 to      : i18next.t('moment:to')
            }
        });
-
     });
-
 
     /***********************************************************************
     ************************************************************************
@@ -85,34 +82,30 @@ Sections:
     );
 
     //Add the translation of the timezones incl. the two default id:'local' and id:'utc'
-    //Østgrønland (grønlandsk: "Tunu"), Vestgrønland (Grønlandsk: "Kitaa"), Nordgrønland (grønlandsk: "Avannaarsua") 
-
+    //Ã˜stgrÃ¸nland (grÃ¸nlandsk: "Tunu"), VestgrÃ¸nland (GrÃ¸nlandsk: "Kitaa"), NordgrÃ¸nland (grÃ¸nlandsk: "Avannaarsua") 
     i18next.addPhrases( 'timezone', {
         'local'               : { en: 'Local time',                      da: 'Lokaltid'           },
         'utc'                 : { en: 'UTC',                             da: 'UTC'                },
-        'Europe/Copenhagen'   : { en: 'Europe/Copenhagen',               da: 'Europa/København'   },
+        'Europe/Copenhagen'   : { en: 'Europe/Copenhagen',               da: 'Europa/KÃ¸benhavn'   },
         'Europe/London'       : { en: 'Europe/London',                   da: 'Europa/London'      },
-        'Atlantic/Faeroe'     : { en: 'Atlantic/Faeroe Island',          da: 'Atlanten/Færøerne'  },
+        'Atlantic/Faeroe'     : { en: 'Atlantic/Faeroe Islands',         da: 'Atlanten/FÃ¦rÃ¸erne'  },
         'Atlantic/Reykjavik'  : { en: 'Atlantic/Reykjavik',              da: 'Atlanten/Reykjavik' },
-        'America/Godthab'     : { en: 'West Greenland/Nuuk',             da: 'Vestgrøndlanf/Nuuk',           kl: 'Kitaa/Nuuk'             },
-        'America/Scoresbysund': { en: 'East Greenland/Ittoqqortoormiit', da: 'Østgrønland/Ittoqqortoormiit', kl: 'Tunu/Ittoqqortoormiit'  },
-        'America/Danmarkshavn': { en: 'East Greenland/Danmarkshavn',     da: 'Østgrønland/Danmarkshavn',     kl: 'Tunu/Danmarkshavn'      },
-        'America/Thule'       : { en: 'North Greenland/Thule Air Base',  da: 'Nordgrønland/Thule Air Base',  kl: 'Avannaarsua/Pituffik'   },
+        'America/Godthab'     : { en: 'West Greenland/Nuuk',             da: 'VestgrÃ¸ndland/Nuuk',           kl: 'Kitaa/Nuuk'             },
+        'America/Scoresbysund': { en: 'East Greenland/Ittoqqortoormiit', da: 'Ã˜stgrÃ¸nland/Ittoqqortoormiit', kl: 'Tunu/Ittoqqortoormiit'  },
+        'America/Danmarkshavn': { en: 'East Greenland/Danmarkshavn',     da: 'Ã˜stgrÃ¸nland/Danmarkshavn',     kl: 'Tunu/Danmarkshavn'      },
+        'America/Thule'       : { en: 'North Greenland/Thule Air Base',  da: 'NordgrÃ¸nland/Thule Air Base',  kl: 'Avannaarsua/Pituffik'   },
+    });
+
+    //Translate the names of the timezones when the language is changed
+    window.fcoo.events.on('languagechanged', function(){ 
+        $.each( moment.simpleFormat.timezoneList, function( index, timezone ){
+            timezone.update( i18next.t('timezone:' + timezone.id) );
+        });
+        
     });
 
 
-    //Tranlate the names of the timezones, when i18next changes lang
-    window.fcoo.events.on('languagechanged', function(){
-
-
-
 /*        
-        $('#timezone option').each( function( index, elem ){
-            var timezone = moment.sfGetTimezone( elem.value );
-            if (timezone)
-                $(elem).text( timezone.fullName );  
-
-
 Standard
     value="local" Local
     value="utc" UTC
@@ -131,13 +124,58 @@ Greenland
 
 
 
+    /***********************************************************************
+    ************************************************************************
+    6: Load format for date, time and timezone from fcoo.settings
+    ************************************************************************
+    ***********************************************************************/
+    //function to set options in moment.simpleFormat and call global event
+    function momentSimpleFormatSetFormat( options ){
+        options = $.extend( true, {}, {
+                        'date'    : window.fcoo.settings.get('date'),
+                        'time'    : window.fcoo.settings.get('time'),
+                        'timezone': window.fcoo.settings.get('timezone'),
+                    }, 
+                    options );
+       
+        moment.sfSetFormat( options );
+        window.fcoo.events.fire('datetimeformatchanged');
+    }
+
+    //Set up and load 'date', 'time', and 'timezone' via fcoo.settings
+    window.fcoo.settings.add({
+        id          : 'date', 
+        validator   : function( date ){ return $.inArray( date, ['DMY', 'MDY', 'YMD']) > -1; },
+        applyFunc   : function( date ){ momentSimpleFormatSetFormat({ 'date': date });       }, 
+        defaultValue: 'DMY',
+        callApply   : false
+    });
+    window.fcoo.settings.add({
+        id          : 'time', 
+        validator   : function( time ){ return $.inArray( time, ['12', '24']) > -1;    },
+        applyFunc   : function( time ){ momentSimpleFormatSetFormat({ 'time': time }); }, 
+        defaultValue: '24',
+        callApply   : false
+    });
+    window.fcoo.settings.add({
+        id          : 'timezone', 
+        validator   : function( timezone ){ return moment.sfGetTimezone( timezone ) !== null;      },
+        applyFunc   : function( timezone ){ momentSimpleFormatSetFormat({ 'timezone': timezone }); }, 
+        defaultValue: 'local',
+        callApply   : false
+    });
+
+    //Also fire "datetimeformatchanged" when the language is changed
+    window.fcoo.events.on('languagechanged', momentSimpleFormatSetFormat); 
 
 
-	/******************************************
+    momentSimpleFormatSetFormat();
+
+    
+    /******************************************
 	Initialize/ready 
 	*******************************************/
 	$(function() { 
-
 	
 	}); //End of initialize/ready
 	//******************************************

@@ -10221,118 +10221,116 @@ return jQuery;
 
 ;
 /****************************************************************************
-	global-events, a plugin to administrate any events
+    global-events, a plugin to administrate any events
 
-	(c) 2015, FCOO
+    (c) 2015, FCOO
 
-	https://github.com/FCOO/global-events
-	https://github.com/FCOO
+    https://github.com/FCOO/global-events
+    https://github.com/FCOO
 
 ****************************************************************************/
 
-(function ($, window, document, undefined) {
-	"use strict";
+(function ($, window/*, document, undefined*/) {
+    "use strict";
 
-	function GlobalEvents( ) {
-		var i;
-		this.events = {};
+    function GlobalEvents( ) {
+        this.events = {};
 
-		this._loop = function _loop( eventName, func, reverse ){
-			this.events[eventName] = this.events[eventName] || []; 		
-			var lgd = this.events[eventName].length;
-			if (reverse){
-				for (i=lgd-1; i>=0; i-- )
-					if (func( this.events[eventName][i], i, this.events[eventName] ))
-					  break;
-			} else {
-				for (i=0; i<lgd; i++ )
-					if (func( this.events[eventName][i], i, this.events[eventName] ))
-					  break;
-			}
-		};
+        this._loop = function( eventName, func, reverse ){
+            this.events[eventName] = this.events[eventName] || [];         
+            var i, lgd = this.events[eventName].length;
+            if (reverse){
+                for (i=lgd-1; i>=0; i-- )
+                    if (func( this.events[eventName][i], i, this.events[eventName] ))
+                        break;
+            } 
+            else {
+                for (i=0; i<lgd; i++ )
+                    if (func( this.events[eventName][i], i, this.events[eventName] ))
+                        break;
+            }
+        };
 
-		this.on = function on(eventNames, callback, context, options){
-			var eventName, i;
-			eventNames = ( eventNames || "" ).match( (/\S+/g) ) || [ "" ];
-			for (i=0; i<eventNames.length; i++ ){
-				eventName = eventNames[i];
-				if (eventName){
-					this.events[eventName] = this.events[eventName] || []; 		
-					this.events[eventName].push( {
-						callback: callback,
-						context	: context || null,
-						options	: $.extend( {once:false, first:false, last:false}, options ) 
-					});
-				}
-			}
-		};
+        this.on = function(eventNames, callback, context, options){
+            var i, eventName = ( eventNames || "" ).match( (/\S+/g) ) || [ "" ];
+            for (i=0; i<eventNames.length; i++ ){
+                eventName = eventNames[i];
+                if (eventName){
+                    this.events[eventName] = this.events[eventName] || [];         
+                    this.events[eventName].push( {
+                        callback: callback,
+                        context : context || null,
+                        options : $.extend( {once:false, first:false, last:false}, options ) 
+                    });
+                }
+            }
+        };
 
-		this.once				= function once(			eventName, callback, context ) { this.on( eventName, callback, context, {	once:true 						} ); };
-		this.onFirst		= function onFirst(		eventName, callback, context ) { this.on( eventName, callback, context, {						 first:true	} ); };
-		this.onLast			= function onLast(		eventName, callback, context ) { this.on( eventName, callback, context, {						 last:true	} ); };
-		this.onceFirst	= function onceFirst(	eventName, callback, context ) { this.on( eventName, callback, context, { once:true, first:true	} ); };
-		this.onceLast		= function onceFirst(	eventName, callback, context ) { this.on( eventName, callback, context, { once:true, last:true	} ); };
+        this.once      = function( eventName, callback, context ) { this.on( eventName, callback, context, { once:true             } ); };
+        this.onFirst   = function( eventName, callback, context ) { this.on( eventName, callback, context, {            first:true } ); };
+        this.onLast    = function( eventName, callback, context ) { this.on( eventName, callback, context, {            last:true  } ); };
+        this.onceFirst = function( eventName, callback, context ) { this.on( eventName, callback, context, { once:true, first:true } ); };
+        this.onceLast  = function( eventName, callback, context ) { this.on( eventName, callback, context, { once:true, last:true  } ); };
 
-		this.off = function off(eventNames, callback, context){
-			var eventName, i, _loop_func;
-			eventNames = ( eventNames || "" ).match( (/\S+/g) ) || [ "" ];
-			_loop_func = function( eventObj, index, list ){
-				if ( (callback == eventObj.callback) &&
-					(!context || (context == eventObj.context)) ){ 
-					list.splice(index, 1);
-					return true;
-				}
-			};
+        this.off = function(eventNames, callback, context){
+            var eventName, i, _loop_func;
+            eventNames = ( eventNames || "" ).match( (/\S+/g) ) || [ "" ];
+            _loop_func = function( eventObj, index, list ){
+                if ( (callback == eventObj.callback) &&
+                    (!context || (context == eventObj.context)) ){ 
+                    list.splice(index, 1);
+                    return true;
+                }
+            };
 
-			for (i=0; i<eventNames.length; i++ ){
-				eventName = eventNames[i];
-				if (eventName){
-					this._loop( eventName, _loop_func );
-				}
-			}
-		};
+            for (i=0; i<eventNames.length; i++ ){
+                eventName = eventNames[i];
+                if (eventName){
+                    this._loop( eventName, _loop_func );
+                }
+            }
+        };
 
 
-		this.fire = function fire( eventName /*, arg1, arg2, .., argN */ ){ 
-			var newArguments = [];
-			for (var i=1; i < arguments.length; i++) {
-				newArguments.push(arguments[i]);
-			}
+        this.fire = function( eventName /*, arg1, arg2, .., argN */ ){ 
+            var newArguments = [];
+            for (var i=1; i < arguments.length; i++) {
+                newArguments.push(arguments[i]);
+            }
 
-			//Fire the functions marked 'first'
-			this._loop( eventName, function( eventObj ){ 
-				if (eventObj.options.first)
-					eventObj.callback.apply( eventObj.context, newArguments );	  
-			});
+            //Fire the functions marked 'first'
+            this._loop( eventName, function( eventObj ){ 
+                if (eventObj.options.first)
+                    eventObj.callback.apply( eventObj.context, newArguments );      
+            });
 
-			//Fire the functions not marked 'first' or 'last'
-			this._loop( eventName, function( eventObj ){ 
-				if (!eventObj.options.first && !eventObj.options.last)
-					eventObj.callback.apply( eventObj.context, newArguments );	  
-			});
+            //Fire the functions not marked 'first' or 'last'
+            this._loop( eventName, function( eventObj ){ 
+                if (!eventObj.options.first && !eventObj.options.last)
+                    eventObj.callback.apply( eventObj.context, newArguments );      
+            });
 
-			//Fire the functions marked 'last'
-			this._loop( eventName, function( eventObj ){ 
-				if (eventObj.options.last)
-					eventObj.callback.apply( eventObj.context, newArguments );	  
-			});
-			
-			//Remove all functions marked 'once'
-			this._loop( eventName, function( eventObj, index, list ){ 
-				if (eventObj.options.once)
-					list.splice(index, 1);
-			}, true);
-		};
+            //Fire the functions marked 'last'
+            this._loop( eventName, function( eventObj ){ 
+                if (eventObj.options.last)
+                    eventObj.callback.apply( eventObj.context, newArguments );      
+            });
+            
+            //Remove all functions marked 'once'
+            this._loop( eventName, function( eventObj, index, list ){ 
+                if (eventObj.options.once)
+                    list.splice(index, 1);
+            }, true);
+        };
 
-		this.trigger	= function(){ this.fire( arguments );				};
-		this.one			=	function(){	this.once( arguments );				};
-		this.oneFirst	= function(){	this.onceFirst( arguments );	};
-		this.oneLast	=	function(){	this.onceLast( arguments  );	};
-
-	}
+        this.trigger  = function(){ this.fire( arguments );      };
+        this.one      = function(){ this.once( arguments );      };
+        this.oneFirst = function(){ this.onceFirst( arguments ); };
+        this.oneLast  = function(){ this.onceLast( arguments  ); };
+    }
   
-  // expose access to the constructor
-  window.GlobalEvents = GlobalEvents;
+    // expose access to the constructor
+    window.GlobalEvents = GlobalEvents;
 
 }(jQuery, this, document));
 ;
@@ -21531,7 +21529,7 @@ return index;
     moment.sfOnSetFormat = function( func ){
         namespace.onSetFormatList = namespace.onSetFormatList || [];
         namespace.onSetFormatList.push( func );
-    }
+    };
 
     /*******************************************************************
     moment.sfAddTimezone
@@ -21542,32 +21540,42 @@ return index;
     }
     All the timezones are in `moment.simpleFormat.timezoneList //[]`
     ********************************************************************/
+        /*******************************************************************
+        timezoneUpdate( name, offsetMoment )
+        Update fullname with optional new value of name and/or offsetMoment
+        ********************************************************************/
+        function timezoneUpdate( name, offsetMoment ){
+            this.name = name || this.name || this.id;
+            this.offsetMoment = offsetMoment || this.offsetMoment || moment();
+            var offset = 0; 
+            switch (this.id){
+                case 'local': offset = (new Date()).getTimezoneOffset();    break;
+                case 'utc'  : offset = null; break;
+                default     : offset = window.moment.tz.zone(this.id).offset( this.offsetMoment ); break;
+            }
+            this.offset = offset;                      
+            this.fullName = this.name;
+            if (offset !== null){
+                this.fullName += ' (UTC' + (offset<=0?'+':'-');
+                offset = Math.abs(offset);        
+                var h = Math.floor(offset / 60),
+                    m = offset % 60;
+                this.fullName += (h<10?'0':'') + h + ':' + (m<10?'0':'') + m + ')';
+            }
+        }
+    
     moment.sfAddTimezone = function( options, offsetMoment ){ 
         var THIS = this;
         if ($.isArray( options ))
             $.each( options, function( index, opt ){ THIS.sfAddTimezone( opt, offsetMoment ); } );
         else { 
-            options.name = options.name || options.id;
-            offsetMoment = offsetMoment || moment();
-            var offset = 0; 
-            switch (options.id){
-                case 'local': offset = (new Date()).getTimezoneOffset();    break;
-                case 'utc'  : offset = null; break;
-                default     : offset = window.moment.tz.zone(options.id).offset( offsetMoment ); break;
-            }
-            options.offset = offset;                      
-            options.fullName = options.name;
-            if (offset !== null){
-                options.fullName += ' (UTC' + (offset<=0?'+':'-');
-                offset = Math.abs(offset);        
-                var h = Math.floor(offset / 60),
-                    m = offset % 60;
-                options.fullName += (h<10?'0':'') + h + ':' + (m<10?'0':'') + m + ')';
-
-            }
+            options.update = timezoneUpdate;
+            options.update( null, offsetMoment );
             namespace.timezoneList.push(options);
         }
     };
+
+
 
     /*******************************************************************
     moment.sfDateFormatList
@@ -21594,11 +21602,17 @@ return index;
     moment.sfInit = function( options ){ 
         this.sfSetFormat( options );
 
-        this.timezoneList = [];
-        this.sfAddTimezone([
-            { id:'local', name: namespace.options.text.local },
-            { id:'utc',   name: namespace.options.text.utc   }
-        ]);
+        if (namespace.timezoneList.length){
+            //Update the name of the default timezones
+            namespace.timezoneList[0].update( namespace.options.text.local );
+            namespace.timezoneList[1].update( namespace.options.text.utc );
+        }
+        else
+            //Add default timezones
+            this.sfAddTimezone([
+                { id:'local', name: namespace.options.text.local },
+                { id:'utc',   name: namespace.options.text.utc   }
+            ]);
     };
 
     moment.sfInit();

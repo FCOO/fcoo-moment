@@ -21,7 +21,14 @@
 	<script src="bower_components.js"></script>
 	<script src="../src/fcoo-moment.js"></script>
 	<script>
+	jQuery(function() { 
+        console.log( moment.sfGetTimezone().fullName );    
+fcoo.settings.set('language', 'kl');
+fcoo.settings.set('timezone', 'America/Godthab');
+        console.log( moment.sfGetTimezone().fullName );    
+        console.log( moment().tzMoment().dateTimeFormat() );    
+	}); //End of initialize/ready
 
-	</script>
+    </script>
 </body>
 </html>
