@@ -93,20 +93,6 @@ template (string|function) is the string used to create the formatted output, or
 
 
 
-
-### options
-| Id | Type | Default | Description |
-| :--: | :--: | :-----: | --- |
-| options1 | boolean | true | If <code>true</code> the ... |
-| options2 | string | null | Contain the ... |
-
-### Methods
-
-    .methods1( arg1, arg2,...): Do something
-    .methods2( arg1, arg2,...): Do something else
-
-
-
 ## Copyright and License
 This plugin is licensed under the [MIT license](https://github.com/FCOO/fcoo-moment/LICENSE).
 
