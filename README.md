@@ -23,6 +23,43 @@ Using [i18next] to change language
 ## Demo
 http://FCOO.github.io/fcoo-moment/demo/ 
 
+## Settings
+The following settings can be set using 
+
+    window.fcoo.settings.set( [ID], [VALUE] );
+
+| ID | Values |Description  |
+| :--: | :--: | :--- |
+| `date` | `"DMY", "MDY", "YMD"` | Format for dates. See [moment-simple-format]   |
+| `time` | `"24", "12"` | Format for time. See [moment-simple-format]   |
+| `timezone` | See below | Sets the `moment.timezone` and sets the [Modernizr](//modernizr.com/)-test `timezoneutc` using  [modernizr-scss](https://github.com/FCOO/modernizr-scss) => display or hide html-elements with<br> `class="show-for-timezoneutc"` and `class="hide-for-timezoneutc"` |
+| `showrelative` | `true, false` | Sets the [Modernizr](//modernizr.com/)-test `showrelative` using  [modernizr-scss](https://github.com/FCOO/modernizr-scss) => display or hide html-elements with<br> `class="show-for-showrelative"` and `class="hide-for-showrelative"`|
+| `showutc` | `true, false` | Sets the [Modernizr](//modernizr.com/)-test `showutc` using  [modernizr-scss](https://github.com/FCOO/modernizr-scss) => display or hide html-elements with<br> `class="show-for-showutc"` and `class="hide-for-showutc"`|
+
+### NOTE
+To only show a element when the user has selected `showutc` AND the time zone isn't UTC use
+    
+    <div class="show-for-showutc hide-for-timezoneutc">...</div>
+
+### `datetimeformatchanged`
+When any of the above settings are changed the [fcoo-global-events] `datetimeformatchanged` is fired
+
+## Timezone
+The following timezones are defined and named
+
+| ID | English name | Danish name  |
+| :--: | :--- | :--- |
+| `"local"` | Local time | Lokaltid |
+| `"utc"`' |  UTC | UTC |
+| `"Europe/Copenhagen"` | Europe/Copenhagen | Europa/København |
+| `"Europe/London"` | Europe/London | Europa/London |
+| `"Atlantic/Faeroe"` | Atlantic/Faeroe Islands | Atlanten/Færøerne |
+| `"Atlantic/Reykjavik"` | Atlantic/Reykjavik | Atlanten/Reykjavik |
+| `"America/Godthab"` | West Greenland/Nuuk | Vestgrøndland/Nuuk |
+| `"America/Scoresbysund"` | East Greenland/Ittoqqortoormiit | Østgrønland/Ittoqqortoormiit |
+| `"America/Danmarkshavn"` | East Greenland/Danmarkshavn | Østgrønland/Danmarkshavn |
+| `"America/Thule"` |  North Greenland/Thule Air Base | Nordgrønland/Thule Air Base |
+
 ## Language
 The following language-packages are included
 `da` - Danish
@@ -37,8 +74,10 @@ The following language-packages are included
 All but `en` and `kl` are included by adding the files in `overrides.moment.main` in `bower.json`
 `kl` are in `/src/kl.js` **BUT IT IS NOT READY** - for now it is only a copy of `da`
 
-The language are changed when `window.fcoo.events` event `languagechanged` is fired using [Moment customization](http://momentjs.com/docs/#/customization/)
-
+When [fcoo-global-events] `languagechanged` is fired 
+1. The language are changed using [Moment customization](http://momentjs.com/docs/#/customization/) 
+2. The list of available timezones are translated using [i18next]
+3. The [fcoo-global-events] `datetimeformatchanged` is fired
 
 ## Packages
 The following packages are installed
@@ -101,6 +140,3 @@ Copyright (c) 2016 [FCOO](https://github.com/FCOO)
 ## Contact information
 
 Niels Holt nho@fcoo.dk
-
-
-## Credits and acknowledgements

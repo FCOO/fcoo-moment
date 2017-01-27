@@ -11,7 +11,7 @@ Sections:
 1: Translation for moment-simple-format
 2: Add time-zones and translation of there names
 4: 
-5: 
+5: Define common Modernizr-tests used to display moment
 6: Load format for date, time and timezone from fcoo.settings
 
 ****************************************************************************/
@@ -124,6 +124,22 @@ Greenland
 
 
 
+
+    /***********************************************************************
+    ************************************************************************
+    5: Define common Modernizr-tests used to display moment
+    ************************************************************************
+    ***********************************************************************/
+
+    /* The following Modernizr-test are deffined in fcoo-moment.scss and are set in momentSimpleFormatSetFormat
+    showrelative: Show also the date/time as relative to now. Can be created using fcoo-value-format 
+    showutc     : Show also the date/time in UTC
+    timezoneutc : On when the selected time zone is UTC
+
+    NOTE: To only show a element when the user has selected "showutc" AND the time zone isn't UTC: class="show-for-showutc hide-for-timezoneutc"
+    */
+
+
     /***********************************************************************
     ************************************************************************
     6: Load format for date, time and timezone from fcoo.settings
@@ -132,17 +148,27 @@ Greenland
     //function to set options in moment.simpleFormat and call global event
     function momentSimpleFormatSetFormat( options ){
         options = $.extend( true, {}, {
-                        'date'    : window.fcoo.settings.get('date'),
-                        'time'    : window.fcoo.settings.get('time'),
-                        'timezone': window.fcoo.settings.get('timezone'),
+                        'date'              : window.fcoo.settings.get('date'),
+                        'time'              : window.fcoo.settings.get('time'),
+                        'timezone'          : window.fcoo.settings.get('timezone'),
+                        '_fcoo_showrelative': window.fcoo.settings.get('showrelative'),
+                        '_fcoo_showutc'     : window.fcoo.settings.get('showutc'),
                     }, 
                     options );
-       
+        
+        //Update moment-formats
         moment.sfSetFormat( options );
+
+        //Update modernizr-test
+        window.modernizrToggle( 'showrelative', options._fcoo_showrelative );
+        window.modernizrToggle( 'showutc',      options._fcoo_showutc );
+        window.modernizrToggle( 'timezoneutc',  options.timezone == 'utc');
+
+        //Fire global event
         window.fcoo.events.fire('datetimeformatchanged');
     }
 
-    //Set up and load 'date', 'time', and 'timezone' via fcoo.settings
+    //Set up and load 'date', 'time', 'timezone', 'showrelative', and 'showutc'  via fcoo.settings
     window.fcoo.settings.add({
         id          : 'date', 
         validator   : function( date ){ return $.inArray( date, ['DMY', 'MDY', 'YMD']) > -1; },
@@ -164,6 +190,21 @@ Greenland
         defaultValue: 'local',
         callApply   : false
     });
+    window.fcoo.settings.add({
+        id          : 'showrelative', 
+        validator   : function( showrelative ){ return jQuery.type( showrelative ) === "boolean";                    },
+        applyFunc   : function( showrelative ){ momentSimpleFormatSetFormat({ '_fcoo_showrelative': showrelative }); }, 
+        defaultValue: false,
+        callApply   : false
+    });
+    window.fcoo.settings.add({
+        id          : 'showutc', 
+        validator   : function( showutc ){ return jQuery.type( showutc ) === "boolean";               },
+        applyFunc   : function( showutc ){ momentSimpleFormatSetFormat({ '_fcoo_showutc': showutc }); }, 
+        defaultValue: false,
+        callApply   : false
+    });
+
 
     //Also fire "datetimeformatchanged" when the language is changed
     window.fcoo.events.on('languagechanged', momentSimpleFormatSetFormat); 
