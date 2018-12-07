@@ -1,5 +1,5 @@
 /****************************************************************************
-	fcoo-moment.js, 
+	fcoo-moment.js,
 
 	(c) 2016, FCOO
 
@@ -10,7 +10,7 @@ Set-up of common systems, objects, and methods for FCOO web applications use of 
 Sections:
 1: Translation for moment-simple-format
 2: Add time-zones and translation of there names
-4: 
+4:
 5: Define common Modernizr-tests used to display moment
 6: Load format for date, time and timezone from fcoo.settings
 
@@ -18,7 +18,7 @@ Sections:
 
 (function ($, moment, i18next, window/*, document, undefined*/) {
 	"use strict";
-	
+
 	//Create fcoo-namespace
 	window.fcoo = window.fcoo || {};
 
@@ -40,7 +40,7 @@ Sections:
 
 
     //Change language in moment and call sfInit when the language is changed
-    window.fcoo.events.on('languagechanged', function(){ 
+    window.fcoo.events.on(window.fcoo.events.LANGUAGECHANGED, function(){
 
         //Special case: Norwegian (no) using "Bokmål" (nb)
         moment.locale(i18next.language == 'no' ? 'nb' : i18next.language);
@@ -82,7 +82,7 @@ Sections:
     );
 
     //Add the translation of the timezones incl. the two default id:'local' and id:'utc'
-    //Østgrønland (grønlandsk: "Tunu"), Vestgrønland (Grønlandsk: "Kitaa"), Nordgrønland (grønlandsk: "Avannaarsua") 
+    //Østgrønland (grønlandsk: "Tunu"), Vestgrønland (Grønlandsk: "Kitaa"), Nordgrønland (grønlandsk: "Avannaarsua")
     i18next.addPhrases( 'timezone', {
         'local'               : { en: 'Local time',                      da: 'Lokaltid'           },
         'utc'                 : { en: 'UTC',                             da: 'UTC'                },
@@ -97,15 +97,15 @@ Sections:
     });
 
     //Translate the names of the timezones when the language is changed
-    window.fcoo.events.on('languagechanged', function(){ 
+    window.fcoo.events.on(window.fcoo.events.LANGUAGECHANGED, function(){
         $.each( moment.simpleFormat.timezoneList, function( index, timezone ){
             timezone.update( i18next.t('timezone:' + timezone.id) );
         });
-        
+
     });
 
 
-/*        
+/*
 Standard
     value="local" Local
     value="utc" UTC
@@ -132,7 +132,7 @@ Greenland
     ***********************************************************************/
 
     /* The following Modernizr-test are deffined in fcoo-moment.scss and are set in momentSimpleFormatSetFormat
-    showrelative: Show also the date/time as relative to now. Can be created using fcoo-value-format 
+    showrelative: Show also the date/time as relative to now. Can be created using fcoo-value-format
     showutc     : Show also the date/time in UTC
     timezoneutc : On when the selected time zone is UTC
 
@@ -153,9 +153,9 @@ Greenland
                         'timezone'          : window.fcoo.settings.get('timezone'),
                         '_fcoo_showrelative': window.fcoo.settings.get('showrelative'),
                         '_fcoo_showutc'     : window.fcoo.settings.get('showutc'),
-                    }, 
+                    },
                     options );
-        
+
         //Update moment-formats
         moment.sfSetFormat( options );
 
@@ -165,59 +165,59 @@ Greenland
         window.modernizrToggle( 'timezoneutc',  options.timezone == 'utc');
 
         //Fire global event
-        window.fcoo.events.fire('datetimeformatchanged');
+        window.fcoo.events.fire(window.fcoo.events.DATETIMEFORMATCHANGED);
     }
 
     //Set up and load 'date', 'time', 'timezone', 'showrelative', and 'showutc'  via fcoo.settings
     window.fcoo.settings.add({
-        id          : 'date', 
+        id          : 'date',
         validator   : function( date ){ return $.inArray( date, ['DMY', 'MDY', 'YMD']) > -1; },
-        applyFunc   : function( date ){ momentSimpleFormatSetFormat({ 'date': date });       }, 
+        applyFunc   : function( date ){ momentSimpleFormatSetFormat({ 'date': date });       },
         defaultValue: 'DMY',
         callApply   : false
     });
     window.fcoo.settings.add({
-        id          : 'time', 
+        id          : 'time',
         validator   : function( time ){ return $.inArray( time, ['12', '24']) > -1;    },
-        applyFunc   : function( time ){ momentSimpleFormatSetFormat({ 'time': time }); }, 
+        applyFunc   : function( time ){ momentSimpleFormatSetFormat({ 'time': time }); },
         defaultValue: '24',
         callApply   : false
     });
     window.fcoo.settings.add({
-        id          : 'timezone', 
+        id          : 'timezone',
         validator   : function( timezone ){ return moment.sfGetTimezone( timezone ) !== null;      },
-        applyFunc   : function( timezone ){ momentSimpleFormatSetFormat({ 'timezone': timezone }); }, 
+        applyFunc   : function( timezone ){ momentSimpleFormatSetFormat({ 'timezone': timezone }); },
         defaultValue: 'local',
         callApply   : false
     });
     window.fcoo.settings.add({
-        id          : 'showrelative', 
+        id          : 'showrelative',
         validator   : function( showrelative ){ return jQuery.type( showrelative ) === "boolean";                    },
-        applyFunc   : function( showrelative ){ momentSimpleFormatSetFormat({ '_fcoo_showrelative': showrelative }); }, 
+        applyFunc   : function( showrelative ){ momentSimpleFormatSetFormat({ '_fcoo_showrelative': showrelative }); },
         defaultValue: false,
         callApply   : false
     });
     window.fcoo.settings.add({
-        id          : 'showutc', 
+        id          : 'showutc',
         validator   : function( showutc ){ return jQuery.type( showutc ) === "boolean";               },
-        applyFunc   : function( showutc ){ momentSimpleFormatSetFormat({ '_fcoo_showutc': showutc }); }, 
+        applyFunc   : function( showutc ){ momentSimpleFormatSetFormat({ '_fcoo_showutc': showutc }); },
         defaultValue: false,
         callApply   : false
     });
 
 
     //Also fire "datetimeformatchanged" when the language is changed
-    window.fcoo.events.on('languagechanged', momentSimpleFormatSetFormat); 
+    window.fcoo.events.on(window.fcoo.events.LANGUAGECHANGED, momentSimpleFormatSetFormat);
 
 
     momentSimpleFormatSetFormat();
 
-    
+
     /******************************************
-	Initialize/ready 
+	Initialize/ready
 	*******************************************/
-	$(function() { 
-	
+	$(function() {
+
 	}); //End of initialize/ready
 	//******************************************
 
