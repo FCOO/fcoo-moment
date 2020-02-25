@@ -3,32 +3,44 @@
 <head>
 	<title>fcoo.dk - fcoo-moment - Demo</title>
 	<meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv='x-dns-prefetch-control' content='on'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv='x-dns-prefetch-control' content='on'>
 
 	<meta name='copyright' content='FCOO'>
 	<meta name='owner' content='FCOO'>
 
-  <link  href="bower_components.css" rel="stylesheet">	
-  <link  href="../src/fcoo-moment.css" rel="stylesheet">	
+    <link  href="css/all.css" rel="stylesheet">
+    <link  href="bower_components.css" rel="stylesheet">
+    <link  href="../src/fcoo-moment.css" rel="stylesheet">
+    <style>
+        html, body { width:100%; height:100%}
+    </style>
 </head>
 
 <body>
-
-
-	
-	
 	<script src="bower_components.js"></script>
 	<script src="../src/fcoo-moment.js"></script>
 	<script>
-	jQuery(function() { 
-        console.log( moment.sfGetTimezone().fullName );    
-fcoo.settings.set('language', 'kl');
-fcoo.settings.set('timezone', 'America/Godthab');
-        console.log( moment.sfGetTimezone().fullName );    
-        console.log( moment().tzMoment().dateTimeFormat() );    
-	}); //End of initialize/ready
+        window.bsIsTouch = false;
+        window.bsIsTouch = (window.location.search =='?touch');
+        i18next.init();
+        i18next.changeLanguage('en');
+        i18next.options.fallbackLng = i18next.language == 'da' ? 'en' : 'da';
 
+/* ONLY TEST
+        console.log('INIT timezone', moment.sfGetTimezone().fullName );
+        fcoo.globalSetting.set({
+            language: 'kl',
+            timezone: 'America/Godthab'
+        });
+
+        console.log('AFTER timezone', moment.sfGetTimezone().fullName );
+        console.log( 'AFTER format', moment().tzMoment().dateTimeFormat() );
+*/
+        $('body').on('contextmenu', function(){
+            fcoo.globalSetting.edit(fcoo.events.DATETIMEFORMATCHANGED);
+            return false;
+        });
     </script>
 </body>
 </html>

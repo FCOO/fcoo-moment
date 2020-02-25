@@ -20,7 +20,7 @@ Sections:
 	"use strict";
 
 	//Create fcoo-namespace
-	window.fcoo = window.fcoo || {};
+	var ns = window.fcoo = window.fcoo || {};
 
     /***********************************************************************
     ************************************************************************
@@ -40,7 +40,7 @@ Sections:
 
 
     //Change language in moment and call sfInit when the language is changed
-    window.fcoo.events.on(window.fcoo.events.LANGUAGECHANGED, function(){
+    ns.events.on(ns.events.LANGUAGECHANGED, function(){
 
         //Special case: Norwegian (no) using "Bokmål" (nb)
         moment.locale(i18next.language == 'no' ? 'nb' : i18next.language);
@@ -96,8 +96,16 @@ Sections:
         'America/Thule'       : { en: 'North Greenland/Thule Air Base',  da: 'Nordgrønland/Thule Air Base',  kl: 'Avannaarsua/Pituffik'   },
     });
 
+    //Add the translation of the different timezone-groups incl. 'standard' for local and utc
+    i18next.addPhrases( 'timezonegroup', {
+        'standard'  : {da: 'Standard', en: 'Standard'  },
+        'europe'    : {da: 'Europa',   en: 'Europe'    },
+        'atlantic'  : {da: 'Atlanten', en: 'Atlantic'  },
+        'greenland' : {da: 'Grønland', en: 'Greenland' }
+    });
+
     //Translate the names of the timezones when the language is changed
-    window.fcoo.events.on(window.fcoo.events.LANGUAGECHANGED, function(){
+    ns.events.on(ns.events.LANGUAGECHANGED, function(){
         $.each( moment.simpleFormat.timezoneList, function( index, timezone ){
             timezone.update( i18next.t('timezone:' + timezone.id) );
         });
@@ -148,11 +156,11 @@ Greenland
     //function to set options in moment.simpleFormat and call global event
     function momentSimpleFormatSetFormat( options ){
         options = $.extend( true, {}, {
-                        'date'              : window.fcoo.settings.get('date'),
-                        'time'              : window.fcoo.settings.get('time'),
-                        'timezone'          : window.fcoo.settings.get('timezone'),
-                        '_fcoo_showrelative': window.fcoo.settings.get('showrelative'),
-                        '_fcoo_showutc'     : window.fcoo.settings.get('showutc'),
+                        'date'              : ns.globalSetting.get('date'),
+                        'time'              : ns.globalSetting.get('time'),
+                        'timezone'          : ns.globalSetting.get('timezone'),
+                        '_fcoo_showrelative': ns.globalSetting.get('showrelative'),
+                        '_fcoo_showutc'     : ns.globalSetting.get('showutc'),
                     },
                     options );
 
@@ -165,39 +173,39 @@ Greenland
         window.modernizrToggle( 'timezoneutc',  options.timezone == 'utc');
 
         //Fire global event
-        window.fcoo.events.fire(window.fcoo.events.DATETIMEFORMATCHANGED);
+        ns.events.fire(ns.events.DATETIMEFORMATCHANGED);
     }
 
     //Set up and load 'date', 'time', 'timezone', 'showrelative', and 'showutc'  via fcoo.settings
-    window.fcoo.settings.add({
+    ns.globalSetting.add({
         id          : 'date',
         validator   : function( date ){ return $.inArray( date, ['DMY', 'MDY', 'YMD']) > -1; },
         applyFunc   : function( date ){ momentSimpleFormatSetFormat({ 'date': date });       },
         defaultValue: 'DMY',
         callApply   : false
     });
-    window.fcoo.settings.add({
+    ns.globalSetting.add({
         id          : 'time',
         validator   : function( time ){ return $.inArray( time, ['12', '24']) > -1;    },
         applyFunc   : function( time ){ momentSimpleFormatSetFormat({ 'time': time }); },
         defaultValue: '24',
         callApply   : false
     });
-    window.fcoo.settings.add({
+    ns.globalSetting.add({
         id          : 'timezone',
         validator   : function( timezone ){ return moment.sfGetTimezone( timezone ) !== null;      },
         applyFunc   : function( timezone ){ momentSimpleFormatSetFormat({ 'timezone': timezone }); },
         defaultValue: 'local',
         callApply   : false
     });
-    window.fcoo.settings.add({
+    ns.globalSetting.add({
         id          : 'showrelative',
         validator   : function( showrelative ){ return jQuery.type( showrelative ) === "boolean";                    },
         applyFunc   : function( showrelative ){ momentSimpleFormatSetFormat({ '_fcoo_showrelative': showrelative }); },
         defaultValue: false,
         callApply   : false
     });
-    window.fcoo.settings.add({
+    ns.globalSetting.add({
         id          : 'showutc',
         validator   : function( showutc ){ return jQuery.type( showutc ) === "boolean";               },
         applyFunc   : function( showutc ){ momentSimpleFormatSetFormat({ '_fcoo_showutc': showutc }); },
@@ -205,22 +213,87 @@ Greenland
         callApply   : false
     });
 
-
-    //Also fire "datetimeformatchanged" when the language is changed
-    window.fcoo.events.on(window.fcoo.events.LANGUAGECHANGED, momentSimpleFormatSetFormat);
-
+    //Also fire "datetimeformatchanged" when the language or the time zone is changed
+    ns.events.on(ns.events.LANGUAGECHANGED, momentSimpleFormatSetFormat);
+    ns.events.on(ns.events.TIMEZONECHANGED, momentSimpleFormatSetFormat);
 
     momentSimpleFormatSetFormat();
 
+    /*****************************************************
+    Create content for globalSetting modal-form
+    *****************************************************/
+    //Time-zone
+    var items = [],
+        currentGroupId;
+    $.each(moment.simpleFormat.timezoneList, function(index, timezone){
+        var groupId = timezone.group || 'standard';
+        if (groupId != currentGroupId){
+            currentGroupId = groupId;
+            items.push('timezonegroup:'+currentGroupId);
+        }
+        items.push({id: timezone.id, text:['timezone:'+timezone.id, timezone.utcOffsetText]});
+    });
+    ns.globalSetting.addModalContent(ns.events.TIMEZONECHANGED, {id: 'timezone', type: 'selectlist', items: items});
 
-    /******************************************
-	Initialize/ready
-	*******************************************/
+
+    //Date and Time format
+//       var content = [], items = [];
+    var lastDate = moment().month(11).date(31),
+        dateFormat = {weekday:'None', month: 'Short', year: 'Full'};
+
+    ns.globalSetting.addModalContent(ns.events.DATETIMEFORMATCHANGED, [
+        //Date-format
+        {
+            id  : 'date',
+            type: 'select',
+            label: {da:'Dato', en:'Date'},
+            items: [
+                {id: 'DMY', text: [{da:'Dag-Måned-År ', en:'Day-Month-Year '}, '('+lastDate.dateFormat({date: 'DMY', dateFormat: dateFormat})+')'] },
+                {id: 'MDY', text: [{da:'Måned-Dag-År ', en:'Month-Day-Year '}, '('+lastDate.dateFormat({date: 'MDY', dateFormat: dateFormat})+')'] },
+                {id: 'YMD', text: [{da:'År-Måned-Dag ', en:'Year-Month-Day '}, '('+lastDate.dateFormat({date: 'YMD', dateFormat: dateFormat})+')'] }
+            ]
+        },
+        //Time-format
+        {
+            id  : 'time',
+            type: 'select',
+            label: {da:'Klokkeslæt', en:'Time'},
+            items: [
+                {id: '12', text: [{da:'12 timer', en:'12 hours'}, '(01:00pm)']},
+                {id: '24', text: [{da:'24 timer', en:'24 hours'}, '(13:00)']}
+            ]
+        },
+        {
+            type: 'inputgroup',
+            label: {da:'Vis (når det er muligt)', en:'Show (when possible)'},
+            content: [
+                //Show relative
+                {
+                    id  : 'showrelative',
+                    type: 'checkbox',
+                    text: {da:'Relativ tid (F.eks. "Nu + 2t")', en: 'Relative time (E.q. "Now + 2h")'},
+                    smallBottomPadding: true
+                },
+                //Show UTC
+                {
+                    id      : 'showutc',
+                    type    : 'checkbox',
+                    text    : {da: 'Klokkeslæt i UTC', en:'Time in UTC'},
+                    hideWhen: {timezone:'utc'},
+                    smallBottomPadding: true
+                }
+            ]
+        }
+
+
+
+    ]);
+
+    //Initialize/ready
 	$(function() {
 
-	}); //End of initialize/ready
-	//******************************************
+	});
 
 
 
-}(jQuery, moment, i18next, this, document));
+}(jQuery, window.moment, window.i18next, this, document));

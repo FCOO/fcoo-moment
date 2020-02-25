@@ -1,6 +1,6 @@
 {
   "name": "fcoo-moment",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "homepage": "https://github.com/FCOO/fcoo-moment",
   "authors": [
     "Niels Holt"
@@ -21,7 +21,7 @@
     "moment-simple-format": "fcoo/moment-simple-format#^1.6.0",
     "fcoo-language": "fcoo/fcoo-language#latest",
     "fcoo-global-events": "fcoo/fcoo-global-events#latest",
-    "fcoo-settings": "fcoo/fcoo-settings#latest",
+    "fcoo-settings": "fcoo/fcoo-settings#^2.3.0",
     "modernizr-javascript": "fcoo/modernizr-javascript#^1.1.0"
   },
   "overrides": {
