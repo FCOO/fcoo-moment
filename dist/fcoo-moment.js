@@ -182,35 +182,40 @@ Greenland
         validator   : function( date ){ return $.inArray( date, ['DMY', 'MDY', 'YMD']) > -1; },
         applyFunc   : function( date ){ momentSimpleFormatSetFormat({ 'date': date });       },
         defaultValue: 'DMY',
-        callApply   : false
+        callApply   : false,
+        globalEvents: ns.events.DATETIMEFORMATCHANGED
     });
     ns.globalSetting.add({
         id          : 'time',
         validator   : function( time ){ return $.inArray( time, ['12', '24']) > -1;    },
         applyFunc   : function( time ){ momentSimpleFormatSetFormat({ 'time': time }); },
         defaultValue: '24',
-        callApply   : false
+        callApply   : false,
+        globalEvents: ns.events.DATETIMEFORMATCHANGED
     });
     ns.globalSetting.add({
         id          : 'timezone',
         validator   : function( timezone ){ return moment.sfGetTimezone( timezone ) !== null;      },
         applyFunc   : function( timezone ){ momentSimpleFormatSetFormat({ 'timezone': timezone }); },
         defaultValue: 'local',
-        callApply   : false
+        callApply   : false,
+        globalEvents: ns.events.TIMEZONECHANGED
     });
     ns.globalSetting.add({
         id          : 'showrelative',
         validator   : function( showrelative ){ return jQuery.type( showrelative ) === "boolean";                    },
         applyFunc   : function( showrelative ){ momentSimpleFormatSetFormat({ '_fcoo_showrelative': showrelative }); },
         defaultValue: false,
-        callApply   : false
+        callApply   : false,
+        globalEvents: ns.events.DATETIMEFORMATCHANGED
     });
     ns.globalSetting.add({
         id          : 'showutc',
         validator   : function( showutc ){ return jQuery.type( showutc ) === "boolean";               },
         applyFunc   : function( showutc ){ momentSimpleFormatSetFormat({ '_fcoo_showutc': showutc }); },
         defaultValue: false,
-        callApply   : false
+        callApply   : false,
+        globalEvents: ns.events.DATETIMEFORMATCHANGED
     });
 
     //Also fire "datetimeformatchanged" when the language or the time zone is changed
