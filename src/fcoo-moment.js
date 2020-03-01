@@ -159,18 +159,11 @@ Greenland
                         'date'              : ns.globalSetting.get('date'),
                         'time'              : ns.globalSetting.get('time'),
                         'timezone'          : ns.globalSetting.get('timezone'),
-                        '_fcoo_showrelative': ns.globalSetting.get('showrelative'),
-                        '_fcoo_showutc'     : ns.globalSetting.get('showutc'),
                     },
-                    options );
+                    $.isPlainObject(options) ? options : {} );
 
         //Update moment-formats
         moment.sfSetFormat( options );
-
-        //Update modernizr-test
-        window.modernizrToggle( 'showrelative', options._fcoo_showrelative );
-        window.modernizrToggle( 'showutc',      options._fcoo_showutc );
-        window.modernizrToggle( 'timezoneutc',  options.timezone == 'utc');
 
         //Fire global event
         ns.events.fire(ns.events.DATETIMEFORMATCHANGED);
@@ -183,7 +176,6 @@ Greenland
         applyFunc   : function( date ){ momentSimpleFormatSetFormat({ 'date': date });       },
         defaultValue: 'DMY',
         callApply   : false,
-        globalEvents: ns.events.DATETIMEFORMATCHANGED
     });
     ns.globalSetting.add({
         id          : 'time',
@@ -191,7 +183,6 @@ Greenland
         applyFunc   : function( time ){ momentSimpleFormatSetFormat({ 'time': time }); },
         defaultValue: '24',
         callApply   : false,
-        globalEvents: ns.events.DATETIMEFORMATCHANGED
     });
     ns.globalSetting.add({
         id          : 'timezone',
@@ -199,23 +190,24 @@ Greenland
         applyFunc   : function( timezone ){ momentSimpleFormatSetFormat({ 'timezone': timezone }); },
         defaultValue: 'local',
         callApply   : false,
-        globalEvents: ns.events.TIMEZONECHANGED
+        globalEvents: ns.events.TIMEZONECHANGED,
+        modernizr   : true,
+        modernizrOnlyValues: ['utc', 'local']
+
     });
     ns.globalSetting.add({
         id          : 'showrelative',
-        validator   : function( showrelative ){ return jQuery.type( showrelative ) === "boolean";                    },
-        applyFunc   : function( showrelative ){ momentSimpleFormatSetFormat({ '_fcoo_showrelative': showrelative }); },
         defaultValue: false,
         callApply   : false,
-        globalEvents: ns.events.DATETIMEFORMATCHANGED
+        globalEvents: ns.events.DATETIMEFORMATCHANGED,
+        modernizr   : true
     });
     ns.globalSetting.add({
         id          : 'showutc',
-        validator   : function( showutc ){ return jQuery.type( showutc ) === "boolean";               },
-        applyFunc   : function( showutc ){ momentSimpleFormatSetFormat({ '_fcoo_showutc': showutc }); },
         defaultValue: false,
         callApply   : false,
-        globalEvents: ns.events.DATETIMEFORMATCHANGED
+        globalEvents: ns.events.DATETIMEFORMATCHANGED,
+        modernizr   : true
     });
 
     //Also fire "datetimeformatchanged" when the language or the time zone is changed
@@ -242,7 +234,6 @@ Greenland
 
 
     //Date and Time format
-//       var content = [], items = [];
     var lastDate = moment().month(11).date(31),
         dateFormat = {weekday:'None', month: 'Short', year: 'Full'};
 
@@ -289,16 +280,6 @@ Greenland
                 }
             ]
         }
-
-
-
     ]);
-
-    //Initialize/ready
-	$(function() {
-
-	});
-
-
 
 }(jQuery, window.moment, window.i18next, this, document));

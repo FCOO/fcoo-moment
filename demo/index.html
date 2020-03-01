@@ -18,7 +18,13 @@
 </head>
 
 <body>
-	<script src="bower_components.js"></script>
+    <div class="show-for-global-setting-showrelative">show-for-global-setting-showrelative</div>
+    <div class="show-for-global-setting-showutc">show-for-global-setting-showutc</div>
+    <div class="show-for-global-setting-timezone-utc">show-for-global-setting-timezone-utc</div>
+    <div class="show-for-global-setting-timezone-local">show-for-global-setting-timezone-local</div>
+    <div class="hide-for-global-setting-timezone-utc show-for-global-setting-showutc">hide-for-global-setting-timezone-utc show-for-global-setting-showutc</div>
+
+    <script src="bower_components.js"></script>
 	<script src="../src/fcoo-moment.js"></script>
 	<script>
         window.bsIsTouch = false;
@@ -38,7 +44,7 @@
         console.log( 'AFTER format', moment().tzMoment().dateTimeFormat() );
 */
         $('body').on('contextmenu', function(){
-            fcoo.globalSetting.edit(fcoo.events.DATETIMEFORMATCHANGED);
+            fcoo.globalSetting.edit(/*fcoo.events.DATETIMEFORMATCHANGED*/);
             return false;
         });
     </script>

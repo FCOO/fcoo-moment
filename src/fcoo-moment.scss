@@ -20,6 +20,8 @@
 //MODERNIZR-SCSS - https://github.com/FCOO/modernizr-scss
 @import "../bower_components/modernizr-scss/dist/modernizr-scss";
 
+//FCOO-SETTINGS - https://github.com/FCOO/fcoo-settings
+@import "../bower_components/fcoo-settings/src/fcoo-settings";
 
 /*
 Adds Modernizr-test:
@@ -27,12 +29,12 @@ showrelative: Show also the date/time as relative to now
 showutc     : Show also the date/time in UTC
 timezoneutc : On when the selected time zone is UTC
 
-NOTE: To only show a element when the user has selected "showutc" AND the time zone isn't UTC: class="show-for-showutc hide-for-timezoneutc"
+NOTE: To only show a element when the user has selected "showutc" AND the time zone isn't UTC:
+class="hide-for-global-setting-timezone-utc show-for-global-setting-showutc"
 */
 
+@include setting-modernizr( $setting-id: showrelative );
+@include setting-modernizr( $setting-id: showutc );
 
-//@mixin show-and-hide-for-modernizr-test( $modernizr-test , $parent-element-type: '', $incl-no-selector: true, $display-value: '', $incl-table-display: true ){
-@include show-and-hide-for-modernizr-test( 'showrelative',   'html',                   false,                   '',                 false);
-@include show-and-hide-for-modernizr-test( 'showutc',        'html',                   false,                   '',                 false);
-@include show-and-hide-for-modernizr-test( 'timezoneutc',    'html',                   false,                   '',                 false);
+@include setting-modernizr( $setting-id: timezone, $value-list: (utc, local) );
 
