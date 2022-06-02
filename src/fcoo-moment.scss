@@ -33,8 +33,9 @@ NOTE: To only show a element when the user has selected "showutc" AND the time z
 class="hide-for-global-setting-timezone-utc show-for-global-setting-showutc"
 */
 
-@include setting-modernizr( $setting-id: showrelative );
-@include setting-modernizr( $setting-id: showutc );
+@include setting-modernizr( $setting-id: showrelative, $incl-visibility: true );
+@include setting-modernizr( $setting-id: showutc, $incl-visibility: true );
 
-@include setting-modernizr( $setting-id: timezone, $value-list: (utc, local) );
+@include setting-modernizr( $setting-id: timezone, $value-list: (utc, local), $incl-visibility: true );
+
 

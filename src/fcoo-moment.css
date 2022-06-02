@@ -8,8 +8,6 @@
 
 
 ************************************************/
-/* stylelint-disable order/properties-alphabetical-order */
-/* stylelint-enable */
 /*****************************************************************************************
 -fcoo-settings.scss,
 
@@ -37,11 +35,35 @@ class="hide-for-global-setting-timezone-utc show-for-global-setting-showutc"
 .no-global-setting-showrelative .show-for-global-setting-showrelative {
   display: none !important; }
 
+.global-setting-showrelative .show-for-global-setting-showrelative-visibility {
+  visibility: visible; }
+
+.global-setting-showrelative .hide-for-global-setting-showrelative-visibility {
+  visibility: hidden !important; }
+
+.no-global-setting-showrelative .hide-for-global-setting-showrelative-visibility {
+  visibility: visible; }
+
+.no-global-setting-showrelative .show-for-global-setting-showrelative-visibility {
+  visibility: hidden !important; }
+
 .global-setting-showutc .hide-for-global-setting-showutc {
   display: none !important; }
 
 .no-global-setting-showutc .show-for-global-setting-showutc {
   display: none !important; }
+
+.global-setting-showutc .show-for-global-setting-showutc-visibility {
+  visibility: visible; }
+
+.global-setting-showutc .hide-for-global-setting-showutc-visibility {
+  visibility: hidden !important; }
+
+.no-global-setting-showutc .hide-for-global-setting-showutc-visibility {
+  visibility: visible; }
+
+.no-global-setting-showutc .show-for-global-setting-showutc-visibility {
+  visibility: hidden !important; }
 
 .global-setting-timezone-utc .hide-for-global-setting-timezone-utc {
   display: none !important; }
@@ -49,8 +71,32 @@ class="hide-for-global-setting-timezone-utc show-for-global-setting-showutc"
 .no-global-setting-timezone-utc .show-for-global-setting-timezone-utc {
   display: none !important; }
 
+.global-setting-timezone-utc .show-for-global-setting-timezone-utc-visibility {
+  visibility: visible; }
+
+.global-setting-timezone-utc .hide-for-global-setting-timezone-utc-visibility {
+  visibility: hidden !important; }
+
+.no-global-setting-timezone-utc .hide-for-global-setting-timezone-utc-visibility {
+  visibility: visible; }
+
+.no-global-setting-timezone-utc .show-for-global-setting-timezone-utc-visibility {
+  visibility: hidden !important; }
+
 .global-setting-timezone-local .hide-for-global-setting-timezone-local {
   display: none !important; }
 
 .no-global-setting-timezone-local .show-for-global-setting-timezone-local {
   display: none !important; }
+
+.global-setting-timezone-local .show-for-global-setting-timezone-local-visibility {
+  visibility: visible; }
+
+.global-setting-timezone-local .hide-for-global-setting-timezone-local-visibility {
+  visibility: hidden !important; }
+
+.no-global-setting-timezone-local .hide-for-global-setting-timezone-local-visibility {
+  visibility: visible; }
+
+.no-global-setting-timezone-local .show-for-global-setting-timezone-local-visibility {
+  visibility: hidden !important; }
