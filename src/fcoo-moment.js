@@ -235,7 +235,20 @@ Greenland
 
     //Date and Time format
     var lastDate = moment().month(11).date(31),
-        dateFormat = {weekday:'None', month: 'Short', year: 'Full'};
+        dateFormat = {weekday:'None', month: 'Short', year: 'Full'},
+        dateItems = [
+            {id: 'DMY', text: {da:'Dag-Måned-År ', en:'Day-Month-Year '}},
+            {id: 'MDY', text: {da:'Måned-Dag-År ', en:'Month-Day-Year '}},
+            {id: 'YMD', text: {da:'År-Måned-Dag ', en:'Year-Month-Day '}}
+        ];
+
+    //Add (31-11-YEAR in the format)
+    dateItems.forEach( function( dateItem ){
+        var dateStr = ' ('+lastDate.dateFormat({date: dateItem.id, dateFormat: dateFormat})+')';
+        $.each(dateItem.text, function(lang){
+            dateItem.text[lang] += dateStr;
+        });
+    });
 
     ns.globalSetting.addModalContent(ns.events.DATETIMEFORMATCHANGED, [
         //Date-format
@@ -243,11 +256,7 @@ Greenland
             id  : 'date',
             type: 'select',
             label: {da:'Dato', en:'Date'},
-            items: [
-                {id: 'DMY', text: [{da:'Dag-Måned-År ', en:'Day-Month-Year '}, '('+lastDate.dateFormat({date: 'DMY', dateFormat: dateFormat})+')'] },
-                {id: 'MDY', text: [{da:'Måned-Dag-År ', en:'Month-Day-Year '}, '('+lastDate.dateFormat({date: 'MDY', dateFormat: dateFormat})+')'] },
-                {id: 'YMD', text: [{da:'År-Måned-Dag ', en:'Year-Month-Day '}, '('+lastDate.dateFormat({date: 'YMD', dateFormat: dateFormat})+')'] }
-            ]
+            items: dateItems
         },
         //Time-format
         {
@@ -255,8 +264,8 @@ Greenland
             type: 'select',
             label: {da:'Klokkeslæt', en:'Time'},
             items: [
-                {id: '12', text: [{da:'12 timer', en:'12 hours'}, '(01:00pm)']},
-                {id: '24', text: [{da:'24 timer', en:'24 hours'}, '(13:00)']}
+                {id: '12', text: {da:'12 timer (01:00pm)', en:'12 hours (01:00pm)'}},
+                {id: '24', text: {da:'24 timer (13:00)',   en:'24 hours (13:00)'}}
             ]
         },
         {
