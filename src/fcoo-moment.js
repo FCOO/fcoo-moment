@@ -156,11 +156,21 @@ Greenland
     //function to set options in moment.simpleFormat and call global event
     function momentSimpleFormatSetFormat( options ){
         options = $.extend( true, {}, {
-                        'date'              : ns.globalSetting.get('date'),
-                        'time'              : ns.globalSetting.get('time'),
-                        'timezone'          : ns.globalSetting.get('timezone'),
-                    },
-                    $.isPlainObject(options) ? options : {} );
+            'date'    : ns.globalSetting.get('date'),
+            'time'    : ns.globalSetting.get('time'),
+            'timezone': ns.globalSetting.get('timezone'),
+            'text': {
+                utc     : i18next.t('moment:utc'),
+                local   : i18next.t('moment:local'),
+                dayAbbr : i18next.t('moment:dayAbbr'),
+                hourAbbr: i18next.t('moment:hourAbbr'),
+                minAbbr : i18next.t('moment:minAbbr'),
+                now     : i18next.t('moment:now'),
+                to      : i18next.t('moment:to')
+            }
+        },
+            $.isPlainObject(options) ? options : {}
+        );
 
         //Update moment-formats
         moment.sfSetFormat( options );
